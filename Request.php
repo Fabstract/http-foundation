@@ -97,21 +97,21 @@ class Request
     /**
      * Custom parameters.
      *
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     * @var \Symfony\Component\HttpFoundation\ParameterBagInterface
      */
     public $attributes;
 
     /**
      * Request body parameters ($_POST).
      *
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     * @var \Symfony\Component\HttpFoundation\ParameterBagInterface
      */
     public $request;
 
     /**
      * Query string parameters ($_GET).
      *
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     * @var \Symfony\Component\HttpFoundation\ParameterBagInterface
      */
     public $query;
 
@@ -132,7 +132,7 @@ class Request
     /**
      * Cookies ($_COOKIE).
      *
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     * @var \Symfony\Component\HttpFoundation\ParameterBagInterface
      */
     public $cookies;
 
@@ -242,6 +242,37 @@ class Request
     );
 
     /**
+     * @var string
+     */
+    public $parameter_bag_class_name = Request::DEFAULT_PARAMETER_BAG_CLASS_NAME;
+
+    /**
+     * @param string $parameter_bag_class_name
+     * @return Request
+     */
+    public function setParameterBagClassName($parameter_bag_class_name)
+    {
+        if (is_string($parameter_bag_class_name) &&
+            is_subclass_of($parameter_bag_class_name, ParameterBagInterface::class)
+        ) {
+            $this->parameter_bag_class_name = $parameter_bag_class_name;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $params
+     * @return ParameterBagInterface
+     */
+    public function getParameterBag($params)
+    {
+        return new $this->parameter_bag_class_name($params);
+    }
+
+    const DEFAULT_PARAMETER_BAG_CLASS_NAME = ParameterBag::class;
+
+    /**
      * @param array                $query      The GET parameters
      * @param array                $request    The POST parameters
      * @param array                $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
@@ -270,10 +301,10 @@ class Request
      */
     public function initialize(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null)
     {
-        $this->request = new ParameterBag($request);
-        $this->query = new ParameterBag($query);
-        $this->attributes = new ParameterBag($attributes);
-        $this->cookies = new ParameterBag($cookies);
+        $this->request = $this->getParameterBag($request);
+        $this->query = $this->getParameterBag($query);
+        $this->attributes = $this->getParameterBag($attributes);
+        $this->cookies = $this->getParameterBag($cookies);
         $this->files = new FileBag($files);
         $this->server = new ServerBag($server);
         $this->headers = new HeaderBag($this->server->getHeaders());
@@ -317,7 +348,7 @@ class Request
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
         ) {
             parse_str($request->getContent(), $data);
-            $request->request = new ParameterBag($data);
+            $request->request = $request->getParameterBag($data);
         }
 
         return $request;
@@ -461,16 +492,16 @@ class Request
     {
         $dup = clone $this;
         if (null !== $query) {
-            $dup->query = new ParameterBag($query);
+            $dup->query = $this->getParameterBag($query);
         }
         if (null !== $request) {
-            $dup->request = new ParameterBag($request);
+            $dup->request = $this->getParameterBag($request);
         }
         if (null !== $attributes) {
-            $dup->attributes = new ParameterBag($attributes);
+            $dup->attributes = $this->getParameterBag($attributes);
         }
         if (null !== $cookies) {
-            $dup->cookies = new ParameterBag($cookies);
+            $dup->cookies = $this->getParameterBag($cookies);
         }
         if (null !== $files) {
             $dup->files = new FileBag($files);
