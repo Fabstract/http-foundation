@@ -1,5 +1,5 @@
 {
-  "name": "fabstract/http-foundation",
+  "name": "symfony/http-foundation",
   "type": "library",
   "description": "Symfony HttpFoundation Component",
   "keywords": [],
