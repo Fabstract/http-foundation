@@ -33,14 +33,14 @@ interface ParameterBagInterface extends \IteratorAggregate, \Countable
      *
      * @param array $parameters An array of parameters
      */
-    public function replace($parameters = []);
+    public function replace(array $parameters = array());
 
     /**
      * Adds parameters.
      *
      * @param array $parameters An array of parameters
      */
-    public function add($parameters = []);
+    public function add(array $parameters = array());
 
     /**
      * Returns a parameter by name.
