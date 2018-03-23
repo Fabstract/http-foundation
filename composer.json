@@ -1,20 +1,5 @@
 {
     "name": "fabstract/http-foundation",
-    "type": "library",
-    "description": "Symfony HttpFoundation Component",
-    "keywords": [],
-    "homepage": "https://symfony.com",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Fabien Potencier",
-            "email": "fabien@symfony.com"
-        },
-        {
-            "name": "Symfony Community",
-            "homepage": "https://symfony.com/contributors"
-        }
-    ],
     "require": {
         "php": "^5.5.9|>=7.0.8",
         "symfony/polyfill-mbstring": "~1.1",
@@ -29,10 +14,5 @@
             "/Tests/"
         ]
     },
-    "minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "3.4-dev"
-        }
-    }
+    "minimum-stability": "dev"
 }
